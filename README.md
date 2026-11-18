@@ -41,7 +41,8 @@ e o rei em xeque fica vermelho. Peças maiúsculas são brancas, minúsculas pre
 
 Tudo começou com uma cena de **The Thing** (*O Enigma de Outro Mundo*, John
 Carpenter, 1982). Logo no começo, MacReady está isolado na Antártida, entediado,
-e passa o tempo jogando xadrez contra um computador — e perde.
+e passa o tempo jogando xadrez contra um computador — e perde. De raiva, despeja
+o whisky dele dentro da máquina, que solta faísca e apaga.
 
 A estética daquilo me chamou atenção: o tabuleiro desenhado em texto na tela, o
 silêncio da estação, a máquina como única adversária disponível. Foi essa imagem
