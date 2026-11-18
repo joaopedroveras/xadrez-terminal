@@ -71,6 +71,43 @@ Sem ativar venv manualmente:
 .venv/bin/python main.py
 ```
 
+### No Windows
+
+O jogo é Python puro e não usa nada específico de Linux, então roda no Windows
+sem adaptação. Recomendo o **Windows Terminal** (já vem no Windows 11; no 10 é
+grátis na Microsoft Store), que entende as cores ANSI e os emojis do jogo.
+
+1. Instale o Python em [python.org](https://www.python.org/downloads/) marcando
+   **"Add python.exe to PATH"** na primeira tela do instalador.
+2. Abra o Windows Terminal na pasta onde quer baixar e rode:
+
+```bat
+git clone https://github.com/joaopedroveras/xadrez-terminal.git
+cd xadrez-terminal
+py -m pip install -r requirements.txt
+py main.py
+```
+
+Sem Git instalado? Baixe pelo botão **Code → Download ZIP**, extraia e rode só
+os dois últimos comandos dentro da pasta.
+
+Se você criou um venv, no Windows o caminho é outro:
+
+```bat
+py -m venv .venv
+.venv\Scripts\activate
+python main.py
+```
+
+Duas observações:
+
+- No `cmd.exe` antigo a tela pode não limpar entre os lances. Nesse caso use
+  `py main.py --no-clear`.
+- O tabuleiro usa **letras** por padrão justamente para não depender de fonte
+  com símbolos de xadrez, então a fonte padrão do Windows já serve. Para
+  `--unicode` é preciso uma fonte com os glifos (Nerd Fonts tem; Cascadia Mono
+  e Consolas não).
+
 ## Uso
 
 ```bash
