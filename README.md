@@ -4,6 +4,10 @@ Bot de xadrez que joga com você no terminal, com tabuleiro em arte ASCII (ou
 símbolos Unicode). Escrito em Python puro, nivelado para ser um adversário
 divertido em vez de imparável.
 
+![Demonstração: o bot de pretas dá o mate do pastor em 4 lances](docs/demo.gif)
+
+*Nível 2 (~700) de pretas: `1. f3 e5 2. g4 Qh4#`. Gravado com `--seed 26`.*
+
 ```
     a   b   c   d   e   f   g   h
   +---+---+---+---+---+---+---+---+
@@ -61,6 +65,7 @@ python3 main.py --nivel 5        # o mais forte que ele sabe jogar
 python3 main.py --cor preta      # bot abre de brancas
 python3 main.py --unicode        # símbolos ♔♕♖ em vez de letras
 python3 main.py --no-color       # sem cores
+python3 main.py --no-clear       # não limpa a tela entre os lances
 python3 main.py --seed 42        # partidas reproduzíveis
 ```
 
@@ -127,6 +132,7 @@ arquivo) e quando a variável `NO_COLOR` está definida.
 ├── tests/               # testes com unittest
 │   ├── test_engine.py
 │   └── test_ui.py
+├── docs/demo.gif        # demonstração animada usada no README
 ├── requirements.txt
 └── README.md
 ```

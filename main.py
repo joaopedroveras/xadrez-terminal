@@ -57,11 +57,19 @@ def show_position(
     human_color: chess.Color,
     level: int,
     color: bool,
+    clear: bool = False,
+    notice: str | None = None,
 ) -> None:
     last_move = board.move_stack[-1] if board.move_stack else None
 
+    if clear:
+        # Redesenha no mesmo lugar em vez de empilhar tabuleiros.
+        print("\x1b[2J\x1b[H", end="")
+
     print()
     print(render(board, ascii_mode=ascii_mode, color=color, last_move=last_move))
+    if notice:
+        print(f"  {notice}")
     print(
         f"  Vez de: {'brancas' if board.turn == chess.WHITE else 'negras'}"
         f"   |   Você: {'brancas' if human_color == chess.WHITE else 'negras'}"
@@ -134,8 +142,10 @@ def play(args: argparse.Namespace) -> None:
     human_color = chess.BLACK if args.cor.lower().startswith("p") else chess.WHITE
     ascii_mode = not args.unicode
     color = should_use_color(args.no_color)
+    tui = sys.stdout.isatty() and not args.no_clear
 
     board = chess.Board()
+    notice: str | None = None
 
     print()
     print("  ♟  XADREZ NO TERMINAL  ♟")
@@ -146,7 +156,7 @@ def play(args: argparse.Namespace) -> None:
 
     while True:
         if board.is_game_over():
-            show_position(board, ascii_mode, human_color, level, color)
+            show_position(board, ascii_mode, human_color, level, color, tui, notice)
             announce_result(board, human_color)
             print("  Digite 'novo' para jogar de novo ou 'sair'.")
             try:
@@ -156,13 +166,14 @@ def play(args: argparse.Namespace) -> None:
                 return
             if command in {"novo", "new"}:
                 board = chess.Board()
+                notice = None
                 continue
             if command in {"sair", "quit", "q", "exit"}:
                 print("  Até a próxima!")
                 return
             continue
 
-        show_position(board, ascii_mode, human_color, level, color)
+        show_position(board, ascii_mode, human_color, level, color, tui, notice)
 
         if board.turn == human_color:
             try:
@@ -209,6 +220,7 @@ def play(args: argparse.Namespace) -> None:
                 print("  ❌ Lance inválido. Tente SAN (Nf3) ou UCI (g1f3).")
                 continue
             board.push(move)
+            notice = None
 
         else:
             print("  Bot pensando...", end="\r", flush=True)
@@ -219,7 +231,7 @@ def play(args: argparse.Namespace) -> None:
                 continue
             san = board.san(move)
             board.push(move)
-            print(f"  🤖 Bot jogou: {san} ({elapsed:.2f}s)")
+            notice = f"🤖 Bot jogou: {san} ({elapsed:.2f}s)"
 
 
 def main() -> None:
@@ -235,6 +247,8 @@ def main() -> None:
                              "precisa de uma fonte monoespaçada com esses glifos")
     parser.add_argument("--no-color", action="store_true",
                         help="desliga as cores ANSI do tabuleiro")
+    parser.add_argument("--no-clear", action="store_true",
+                        help="não limpa a tela entre os lances (mantém o histórico)")
     parser.add_argument("--seed", type=int, default=None,
                         help="semente aleatória (para partidas reproduzíveis)")
     args = parser.parse_args()
