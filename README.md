@@ -6,22 +6,32 @@ divertido em vez de imparável.
 
 ```
     a  b  c  d  e  f  g  h
-+------------------------+
-8 | ♜  ♞  ♝  ♛  ♚  ♝  ♞  ♜ | 8
-7 | ♟  ♟  ♟  ♟  ♟  ♟  ♟  ♟ | 7
-6 | .  .  .  .  .  .  .  . | 6
-5 | .  .  .  .  .  .  .  . | 5
-4 | .  .  .  .  ♙  .  .  . | 4
-3 | .  .  .  .  .  .  .  . | 3
-2 | ♙  ♙  ♙  ♙  .  ♙  ♙  ♙ | 2
-1 | ♖  ♘  ♗  ♕  ♔  ♗  ♘  ♖ | 1
-+------------------------+
+  +---+---+---+---+---+---+---+---+
+8 | r | n | b | q | k | b | n | r |
+  +---+---+---+---+---+---+---+---+
+7 | p | p | p | p | p | p | p | p |
+  +---+---+---+---+---+---+---+---+
+6 | . | . | . | . | . | . | . | . |
+  +---+---+---+---+---+---+---+---+
+5 | . | . | . | . | . | . | . | . |
+  +---+---+---+---+---+---+---+---+
+4 | . | . | . | . | P | . | . | . |
+  +---+---+---+---+---+---+---+---+
+3 | . | . | . | . | . | . | . | . |
+  +---+---+---+---+---+---+---+---+
+2 | P | P | P | P | . | P | P | P |
+  +---+---+---+---+---+---+---+---+
+1 | R | N | B | Q | K | B | N | R |
+  +---+---+---+---+---+---+---+---+
     a  b  c  d  e  f  g  h
 
   Vez de: negras   |   Você: brancas
   Motor: nível 2 — Casual (~700)
   Lances: 1. e4
 ```
+
+Com cor, as casas alternam claro/escuro, a última jogada fica destacada em verde
+e o rei em xeque fica vermelho. Peças maiúsculas são brancas, minúsculas pretas.
 
 ## Como rodar
 
@@ -49,9 +59,27 @@ python3 main.py                  # você de brancas, bot ~700
 python3 main.py --nivel 1000     # bot mais forte
 python3 main.py --nivel 5        # o mais forte que ele sabe jogar
 python3 main.py --cor preta      # bot abre de brancas
-python3 main.py --ascii          # letras ASCII (P N B R Q K)
+python3 main.py --unicode        # símbolos ♔♕♖ em vez de letras
+python3 main.py --no-color       # sem cores
 python3 main.py --seed 42        # partidas reproduzíveis
 ```
+
+### Fontes e cores
+
+O padrão usa **letras** (`K Q R B N P` e minúsculas) porque muitas fontes
+monoespaçadas não têm os símbolos de xadrez. Quando faltam, o terminal busca em
+outras fontes e o resultado desalinha — em especial o peão preto `♟`, que em
+alguns sistemas é renderizado como emoji colorido de largura dupla.
+
+Se a sua fonte tiver o bloco de xadrez completo (Nerd Fonts, DejaVu Sans Mono,
+Noto Sans Mono completo), use `--unicode` para ver as peças de verdade:
+
+```bash
+python3 main.py --unicode
+```
+
+As cores são desligadas sozinhas quando a saída não é um terminal (ex.: pipe ou
+arquivo) e quando a variável `NO_COLOR` está definida.
 
 ### Comandos durante o jogo
 
@@ -94,8 +122,11 @@ python3 main.py --seed 42        # partidas reproduzíveis
 ```
 .
 ├── main.py              # interface do terminal e loop do jogo
+├── boardview.py         # desenho do tabuleiro (cores, destaque, capturadas)
 ├── engine.py            # avaliação, busca e níveis
-├── tests/test_engine.py # testes com unittest
+├── tests/               # testes com unittest
+│   ├── test_engine.py
+│   └── test_ui.py
 ├── requirements.txt
 └── README.md
 ```

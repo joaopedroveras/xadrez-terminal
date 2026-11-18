@@ -5,7 +5,8 @@ Uso:
     python3 main.py                 # bot nível ~700, você de brancas
     python3 main.py --nivel 1000    # bot mais forte
     python3 main.py --cor preta     # bot abre de brancas
-    python3 main.py --ascii         # símbolos ASCII em vez de Unicode
+    python3 main.py --unicode       # símbolos ♔♕♖ (precisa de fonte com suporte)
+    python3 main.py --no-color      # sem cores ANSI
 """
 
 from __future__ import annotations
@@ -17,13 +18,8 @@ import time
 
 import chess
 
+from boardview import captured_pieces, render, should_use_color
 from engine import choose_move, describe_level, hint, material_balance, resolve_level
-
-UNICODE_GLYPHS = {
-    "P": "♙", "N": "♘", "B": "♗", "R": "♖", "Q": "♕", "K": "♔",
-    "p": "♟", "n": "♞", "b": "♝", "r": "♜", "q": "♛", "k": "♚",
-}
-ASCII_GLYPHS = {c: c for c in "PNBRQKpnbrqk"}
 
 HELP = """
 Comandos:
@@ -36,23 +32,6 @@ Comandos:
   ajuda       mostra esta ajuda
   sair        encerra o jogo
 """.strip()
-
-
-def render(board: chess.Board, ascii_mode: bool = False) -> str:
-    glyphs = ASCII_GLYPHS if ascii_mode else UNICODE_GLYPHS
-    border = "+" + "---" * 8 + "+"
-    lines = ["    a  b  c  d  e  f  g  h", border]
-
-    for rank in range(8, 0, -1):
-        cells = []
-        for file in range(8):
-            piece = board.piece_at(chess.square(file, rank - 1))
-            cells.append(f" {glyphs[piece.symbol()] if piece else '.'} ")
-        lines.append(f"{rank} |" + "".join(cells) + f"| {rank}")
-        lines.append(border)
-
-    lines.append("    a  b  c  d  e  f  g  h")
-    return "\n".join(lines)
 
 
 def move_log(board: chess.Board) -> str:
@@ -72,17 +51,31 @@ def move_log(board: chess.Board) -> str:
     return log if len(log) <= 110 else "..." + log[-107:]
 
 
-def show_position(board: chess.Board, ascii_mode: bool, human_color: chess.Color, level: int) -> None:
+def show_position(
+    board: chess.Board,
+    ascii_mode: bool,
+    human_color: chess.Color,
+    level: int,
+    color: bool,
+) -> None:
+    last_move = board.move_stack[-1] if board.move_stack else None
+
     print()
-    print(render(board, ascii_mode))
-    print(f"  Vez de: {'brancas' if board.turn == chess.WHITE else 'negras'}"
-          f"   |   Você: {'brancas' if human_color == chess.WHITE else 'negras'}")
+    print(render(board, ascii_mode=ascii_mode, color=color, last_move=last_move))
+    print(
+        f"  Vez de: {'brancas' if board.turn == chess.WHITE else 'negras'}"
+        f"   |   Você: {'brancas' if human_color == chess.WHITE else 'negras'}"
+    )
     print(f"  Motor: {describe_level(level)}")
 
     balance = material_balance(board)
     if balance:
-        print(f"  Material: {'+' if balance > 0 else '-'}{abs(balance) / 100:.1f} a favor das "
-              f"{'brancas' if balance > 0 else 'negras'}")
+        side = "brancas" if balance > 0 else "negras"
+        print(f"  Material: {'+' if balance > 0 else '-'}{abs(balance) / 100:.1f} a favor das {side}")
+
+    white_lost, black_lost = captured_pieces(board, ascii_mode)
+    if white_lost or black_lost:
+        print(f"  Capturadas: brancas {white_lost or '—'}  |  pretas {black_lost or '—'}")
 
     if board.is_check():
         print("  ⚠  XEQUE!")
@@ -131,7 +124,6 @@ def undo(board: chess.Board, human_color: chess.Color) -> None:
         print("  Nada para desfazer.")
         return
     board.pop()
-    # Volta até ser a vez do humano (e desfaz a resposta do bot também).
     while board.move_stack and board.turn != human_color:
         board.pop()
 
@@ -140,7 +132,8 @@ def play(args: argparse.Namespace) -> None:
     rng = random.Random(args.seed)
     level = resolve_level(args.nivel)
     human_color = chess.BLACK if args.cor.lower().startswith("p") else chess.WHITE
-    ascii_mode = args.ascii
+    ascii_mode = not args.unicode
+    color = should_use_color(args.no_color)
 
     board = chess.Board()
 
@@ -153,7 +146,7 @@ def play(args: argparse.Namespace) -> None:
 
     while True:
         if board.is_game_over():
-            show_position(board, ascii_mode, human_color, level)
+            show_position(board, ascii_mode, human_color, level, color)
             announce_result(board, human_color)
             print("  Digite 'novo' para jogar de novo ou 'sair'.")
             try:
@@ -169,7 +162,7 @@ def play(args: argparse.Namespace) -> None:
                 return
             continue
 
-        show_position(board, ascii_mode, human_color, level)
+        show_position(board, ascii_mode, human_color, level, color)
 
         if board.turn == human_color:
             try:
@@ -237,8 +230,11 @@ def main() -> None:
                         help="força do bot: 1-5 ou rating aproximado (padrão: 2 ≈ 700)")
     parser.add_argument("--cor", default="branca", choices=["branca", "preta"],
                         help="cor que você joga (padrão: branca)")
-    parser.add_argument("--ascii", action="store_true",
-                        help="usa letras ASCII (P N B R Q K) em vez dos símbolos Unicode")
+    parser.add_argument("--unicode", action="store_true",
+                        help="usa símbolos de xadrez (♔♕♖) em vez de letras; "
+                             "precisa de uma fonte monoespaçada com esses glifos")
+    parser.add_argument("--no-color", action="store_true",
+                        help="desliga as cores ANSI do tabuleiro")
     parser.add_argument("--seed", type=int, default=None,
                         help="semente aleatória (para partidas reproduzíveis)")
     args = parser.parse_args()
