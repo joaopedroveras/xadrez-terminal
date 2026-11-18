@@ -5,7 +5,7 @@ símbolos Unicode). Escrito em Python puro, nivelado para ser um adversário
 divertido em vez de imparável.
 
 ```
-    a  b  c  d  e  f  g  h
+    a   b   c   d   e   f   g   h
   +---+---+---+---+---+---+---+---+
 8 | r | n | b | q | k | b | n | r |
   +---+---+---+---+---+---+---+---+
@@ -23,7 +23,7 @@ divertido em vez de imparável.
   +---+---+---+---+---+---+---+---+
 1 | R | N | B | Q | K | B | N | R |
   +---+---+---+---+---+---+---+---+
-    a  b  c  d  e  f  g  h
+    a   b   c   d   e   f   g   h
 
   Vez de: negras   |   Você: brancas
   Motor: nível 2 — Casual (~700)

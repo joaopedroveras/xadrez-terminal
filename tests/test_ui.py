@@ -57,6 +57,15 @@ class TestRender(unittest.TestCase):
         text = render(board, color=False)
         self.assertNotIn("\x1b[", text)
 
+    def test_letras_das_colunas_alinhadas_com_as_casas(self):
+        board = chess.Board()
+        lines = render(board, color=False, ascii_mode=True).splitlines()
+        label = lines[0]
+        # Cada casa avança 4 caracteres: a letra deve cair no centro de cada uma.
+        for index, name in enumerate("abcdefgh"):
+            self.assertEqual(label.index(name), 4 + 4 * index)
+        self.assertEqual(label, lines[-1])
+
     def test_tabuleiro_invertido(self):
         board = chess.Board()
         text = render(board, color=False, flipped=True)

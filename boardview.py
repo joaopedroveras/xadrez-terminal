@@ -131,10 +131,9 @@ def render(
     columns = [chess.square(chess.FILE_NAMES.index(name), 0) for name in files]
     cell_width = 3
 
-    label = " " * (2 + 1 + 1) + "".join(
-        f"{name}{' ' * (cell_width - 1)}" for name in files
-    )
-    label = label.rstrip()
+    # Cada coluna avança 4 caracteres (" X " + "|"), então as letras precisam
+    # do mesmo passo para ficarem centralizadas sob as casas.
+    label = " " * 4 + "".join(f"{name}{' ' * cell_width}" for name in files).rstrip()
 
     def row(rank: int) -> list[str]:
         return [
