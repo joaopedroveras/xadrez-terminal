@@ -36,7 +36,7 @@ e o rei em xeque fica vermelho. Peças maiúsculas são brancas, minúsculas pre
 ## Como rodar
 
 ```bash
-git clone https://github.com/SEU-USUARIO/xadrez-terminal.git
+git clone https://github.com/pedrobandvzip/xadrez-terminal.git
 cd xadrez-terminal
 
 python3 -m venv .venv
