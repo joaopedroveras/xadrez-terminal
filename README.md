@@ -37,6 +37,20 @@ divertido em vez de imparável.
 Com cor, as casas alternam claro/escuro, a última jogada fica destacada em verde
 e o rei em xeque fica vermelho. Peças maiúsculas são brancas, minúsculas pretas.
 
+## De onde veio a ideia
+
+Tudo começou com uma cena de **The Thing** (*O Enigma de Outro Mundo*, John
+Carpenter, 1982). Logo no começo, MacReady está isolado na Antártida, entediado,
+e passa o tempo jogando xadrez contra um computador — e perde.
+
+A estética daquilo me chamou atenção: o tabuleiro desenhado em texto na tela, o
+silêncio da estação, a máquina como única adversária disponível. Foi essa imagem
+que me deu vontade de fazer um xadrez de terminal: sem interface gráfica, sem
+imagens, só caracteres e cores ANSI.
+
+A diferença é que aqui dá para escolher a força do adversário. O computador do
+filme não tinha pena de ninguém.
+
 ## Como rodar
 
 ```bash
